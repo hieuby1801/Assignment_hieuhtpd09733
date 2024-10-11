@@ -11,6 +11,6 @@ namespace WebAPI.Interface
         bool CreateOrder(Order order);
         bool UpdateOrder(Order order);
         bool DeleteOrder(int id);
-
+        bool Save();
     }
 }
