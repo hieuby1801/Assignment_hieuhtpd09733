@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI.Models
+namespace WebAPI.DTOs
 {
-    public class Profile
+    public class PersonalProfileDto
     {
         public int Id { get; set; }
         [Column(TypeName = "nvarchar(50)")]
@@ -18,8 +18,7 @@ namespace WebAPI.Models
         public string Gender { get; set; }
         [Column(TypeName = "nvarchar(200)")]
         public string Address { get; set; }
-        public DateTime BirthDate { get; set; }        
+        public DateTime BirthDate { get; set; }
         public string? PictureLink { get; set; }
-        public Account Account { get; set; }
     }
 }

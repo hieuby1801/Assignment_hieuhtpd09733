@@ -13,7 +13,7 @@ namespace WebAPI.Models
         public int Available { get; set; }
         public string? Description { get; set; }
         public FoodCategory FoodCategory { get; set; }
-        public OrderDetail OrderDetail { get; set; }
+        public ICollection<OrderDetail>? OrderDetails { get; set; }
         public ICollection<ComboDetail>? ComboDetails { get; set; }
     }
 }

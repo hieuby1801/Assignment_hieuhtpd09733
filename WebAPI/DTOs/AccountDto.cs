@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebAPI.Models
+namespace WebAPI.DTOs
 {
-    public class Account
+    public class AccountDto
     {
         public int Id { get; set; }
         [Column(TypeName = "varchar(15)")]
@@ -11,7 +11,5 @@ namespace WebAPI.Models
         public string Password { get; set; }
         public int StatusCode { get; set; }
         public int ProfileId { get; set; }
-        public PersonalProfile Profile { get; set; }
-        public ICollection<Order> Order { get; set; }
     }
 }

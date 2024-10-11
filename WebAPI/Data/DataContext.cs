@@ -7,7 +7,7 @@ namespace WebAPI.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base (options) { }
         public DbSet<Account> Accounts { get; set; }
-        public DbSet<Profile> Profiles { get; set; }    
+        public DbSet<PersonalProfile> Profiles { get; set; }    
         public DbSet<Food> Foods { get; set; }
         public DbSet<FoodCategory> FoodCategories { get; set; }
         public DbSet<Combo> Combos { get; set; }
@@ -17,7 +17,7 @@ namespace WebAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Profile>()
+            modelBuilder.Entity<PersonalProfile>()
                 .HasOne(p => p.Account)
                 .WithOne(a => a.Profile)
                 .HasForeignKey<Account>(a => a.ProfileId)
@@ -42,7 +42,21 @@ namespace WebAPI.Data
                 .WithMany(f => f.ComboDetails)
                 .HasForeignKey(cd => cd.FoodId)
                 .IsRequired();
-            modelBuilder.Entity<ComboDetail>()
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Food)
+                .WithMany(f => f.OrderDetails)
+                .HasForeignKey(od => od.FoodId)
+                .IsRequired();
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Combo)
+                .WithMany(f => f.OrderDetails)
+                .HasForeignKey(od => od.ComboId)
+                .IsRequired();
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Order)
+                .WithMany(o => o.OrderDetails)
+                .HasForeignKey(od => od.OrderId)
+                .IsRequired();
             base.OnModelCreating(modelBuilder);
         }
     }
