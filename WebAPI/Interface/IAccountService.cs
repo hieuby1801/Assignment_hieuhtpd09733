@@ -2,9 +2,9 @@
 
 namespace WebAPI.Interface
 {
-    public interface IAccount
+    public interface IAccountService
     {
-        ICollection<IAccount> GetAccounts();
+        public ICollection<Account> GetAccounts();
         Account GetAccount(int id);
         Account GetAccount(string name);
         bool AccountsExists(int id);

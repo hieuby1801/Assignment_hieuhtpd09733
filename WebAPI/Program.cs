@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebAPI.AutoMapper;
 using WebAPI.Data;
+using WebAPI.Repository;
+using WebAPI.Interface;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options 
     => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddAutoMapper(typeof(Mapper));
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IPersonalProfile, PersonalProfileService>();
 
 var app = builder.Build();
 

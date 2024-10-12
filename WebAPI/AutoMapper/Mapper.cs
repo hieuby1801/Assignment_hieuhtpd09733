@@ -9,7 +9,8 @@ namespace WebAPI.AutoMapper
     {
         public Mapper()
         {
-            CreateMap<Account, AccountDto>().ReverseMap();
+            CreateMap<Account, AccountDto>();
+            CreateMap<AccountDto, Account>();
             CreateMap<Combo, ComboDto>().ReverseMap();
             CreateMap<ComboDetail, ComboDetailDto>().ReverseMap();
             CreateMap<Food, FoodDto>().ReverseMap();
