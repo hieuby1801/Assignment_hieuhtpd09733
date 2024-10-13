@@ -15,7 +15,7 @@ builder.Services.AddDbContext<DataContext>(options
     => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddAutoMapper(typeof(Mapper));
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IPersonalProfile, PersonalProfileService>();
+builder.Services.AddScoped<IPersonalProfileService, PersonalProfileService>();
 
 var app = builder.Build();
 
