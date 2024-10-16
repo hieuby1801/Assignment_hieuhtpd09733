@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.DTOs;
 using WebAPI.Interface;
 using WebAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Controllers
 {
@@ -17,6 +18,48 @@ namespace WebAPI.Controllers
             _profileRepository = profileRepository;
             _mapper = mapper;
         }
+
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<PersonalProfile>))]
+        public IActionResult GetPersonalProfiles()
+        {
+            var profiles = _mapper.Map<List<PersonalProfileDto>>(_profileRepository.GetPersonalProfiles());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(profiles);
+        }
+
+        [HttpGet, Route("search/{name}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<PersonalProfile>))]
+        [ProducesResponseType(400)]
+        public IActionResult SearchPersonalProfiles(string name)
+        {
+            var profiles = _mapper.Map<List<PersonalProfileDto>>(_profileRepository.GetPersonalProfiles(name));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(profiles);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(PersonalProfile))]
+        [ProducesResponseType(400)]
+        public IActionResult GetPersonalProfile(int id)
+        {
+            if (!_profileRepository.ExistProfile(id))
+                return NotFound();
+
+            var profile = _mapper.Map<PersonalProfile>(_profileRepository.GetPersonalProfile(id));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(profile);
+        }
+
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -25,8 +68,8 @@ namespace WebAPI.Controllers
             if (profileDto == null)
                 return BadRequest(ModelState); // BadRequest produce 400 BadRequest Respones
                                                // Model state represents errors that come from two subsystems: model binding and model validation
-            var checkPhone = _profileRepository.ExistPhone(profileDto.Phone);
-            var checkEmail = _profileRepository.ExistEmail(profileDto.Email);
+            bool checkPhone = _profileRepository.ExistPhone(profileDto.Phone);
+            bool checkEmail = _profileRepository.ExistEmail(profileDto.Email);
             // Tìm xem có trùng phone or email nào trong csdl không
 
             if (checkPhone)
@@ -56,6 +99,35 @@ namespace WebAPI.Controllers
             } // trả lỗi khi service ko thể add Profile vào database
 
             return Ok("Successfully created");
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateProfile(int id, [FromBody]PersonalProfileDto profile)
+        {
+            if(profile == null)
+                return BadRequest(ModelState) ;
+
+            if(id != profile.Id)
+                return BadRequest(ModelState);
+
+            if(!_profileRepository.ExistProfile(id))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var profileMap = _mapper.Map<PersonalProfile>(profile);
+
+            if (!_profileRepository.UpdateProfile(profileMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating Profile");
+                return StatusCode(500, ModelState) ;
+            }
+
+            return NoContent();
         }
     }
 }
