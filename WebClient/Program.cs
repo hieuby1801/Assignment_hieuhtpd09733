@@ -26,6 +26,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=PersonalProfile}/{action=GetProductByName}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

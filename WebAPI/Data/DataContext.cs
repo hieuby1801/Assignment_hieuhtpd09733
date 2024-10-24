@@ -47,11 +47,7 @@ namespace WebAPI.Data
                 .WithMany(f => f.OrderDetails)
                 .HasForeignKey(od => od.FoodId)
                 .IsRequired();
-            modelBuilder.Entity<OrderDetail>()
-                .HasOne(od => od.Combo)
-                .WithMany(f => f.OrderDetails)
-                .HasForeignKey(od => od.ComboId)
-                .IsRequired();
+            
             modelBuilder.Entity<OrderDetail>()
                 .HasOne(od => od.Order)
                 .WithMany(o => o.OrderDetails)

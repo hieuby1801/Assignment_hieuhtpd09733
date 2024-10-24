@@ -7,10 +7,10 @@
         // mặc định id = 1 là food null
         public int FoodId { get; set; }
         // mặc định id = 1 là combo null
-        public int ComboId { get; set; }
+        public int? ComboId { get; set; }
         // mặc định = 1
         public int QuantityFood { get; set; }
         // mặc định = 1
-        public int QuantityCombo { get; set; }
+        public int? QuantityCombo { get; set; }
     }
 }

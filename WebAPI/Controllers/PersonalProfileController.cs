@@ -4,13 +4,17 @@ using WebAPI.DTOs;
 using WebAPI.Interface;
 using WebAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PersonalProfileController : Controller
     {
+        // Profile sẽ không có delete, thay vào đó, sẽ thay đổi statusCode của account về 0, tức ko hoạt động và ko thể tìm thấy
+
         private readonly IPersonalProfileService _profileRepository;
         private readonly IMapper _mapper;
         public PersonalProfileController (IPersonalProfileService profileRepository, IMapper mapper)
@@ -107,20 +111,21 @@ namespace WebAPI.Controllers
         [ProducesResponseType(404)]
         public IActionResult UpdateProfile(int id, [FromBody]PersonalProfileDto profile)
         {
+            // check rỗng
             if(profile == null)
                 return BadRequest(ModelState) ;
-
+            // check id
             if(id != profile.Id)
                 return BadRequest(ModelState);
-
+            // check id tồn tại?
             if(!_profileRepository.ExistProfile(id))
                 return NotFound();
-
+            // check tính chuẩn xác
             if (!ModelState.IsValid)
                 return BadRequest();
-
+            // map dto về model
             var profileMap = _mapper.Map<PersonalProfile>(profile);
-
+            // gọi repo để update model, nếu lỗi thì trả lỗi 
             if (!_profileRepository.UpdateProfile(profileMap))
             {
                 ModelState.AddModelError("", "Something went wrong updating Profile");

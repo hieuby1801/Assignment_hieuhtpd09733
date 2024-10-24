@@ -181,7 +181,7 @@ namespace WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ComboId")
+                    b.Property<int?>("ComboId")
                         .HasColumnType("int");
 
                     b.Property<int>("FoodId")
@@ -190,7 +190,7 @@ namespace WebAPI.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("QuantityCombo")
+                    b.Property<int?>("QuantityCombo")
                         .HasColumnType("int");
 
                     b.Property<int>("QuantityFood")
@@ -302,9 +302,7 @@ namespace WebAPI.Migrations
                 {
                     b.HasOne("WebAPI.Models.Combo", "Combo")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ComboId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ComboId");
 
                     b.HasOne("WebAPI.Models.Food", "Food")
                         .WithMany("OrderDetails")

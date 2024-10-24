@@ -92,3 +92,34 @@ insert into OrderDetails
 values (2, 3, 3, 3, 3);
 insert into OrderDetails
 values (3, 4, 4, 4, 4);
+
+update Foods 
+set Description = '/images/pizza1.jpg'
+where id = 1;
+update Foods 
+set Description = '/images/pizza2.jpg'
+where id = 2;
+update Foods 
+set Description = '/images/pasta1.jpg'
+where id = 3;
+update Foods 
+set Description = '/images/pasta2.jpg'
+where id = 4;
+update Foods 
+set Description = '/images/tacos1.jpg'
+where id = 5;
+update Foods 
+set Description = '/images/tacos2.jpg'
+where id = 6;
+update Foods 
+set Description = '/images/beef1.jpg'
+where id = 7;
+update Foods 
+set Description = '/images/beef1.jpg'
+where id = 8;
+update Foods 
+set Description = '/images/chicken1.jpg'
+where id = 9;
+update Foods 
+set Description = '/images/chicken2.jpg'
+where id = 10;

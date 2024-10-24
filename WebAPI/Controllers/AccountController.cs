@@ -5,6 +5,12 @@ using WebAPI.Interface;
 using WebAPI.AutoMapper;
 using AutoMapper;
 using WebAPI.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
+using Newtonsoft.Json;
 
 namespace WebAPI.Controllers
 {
@@ -12,12 +18,14 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
+        private readonly IConfiguration _configuration;
         private readonly IAccountService _account;
         private readonly IMapper _mapper;
-        public AccountController(IAccountService account, IMapper mapper)
+        public AccountController(IAccountService account, IMapper mapper, IConfiguration configuration)
         {
             _account = account;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -53,6 +61,67 @@ namespace WebAPI.Controllers
             } // trả lỗi khi service ko thể add Account vào database
 
             return Ok("Successfully created");
+        }
+        
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Account>))]
+        public IActionResult GetAccounts()
+        {
+            var accounts = _mapper.Map<IEnumerable<AccountDto>>(_account.GetAccounts());
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(accounts);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(Account))]
+        [ProducesResponseType(400)]
+        public IActionResult GetAccount(int id)
+        {
+            var account = _mapper.Map<AccountDto>(_account.GetAccount(id));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(account);
+        }
+
+        [HttpGet, Route("search/{username}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Account>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetAccounts(string username)
+        {
+            var accounts = _mapper.Map<IEnumerable<AccountDto>>(_account.GetAccounts(username));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(accounts);
+        }        
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] WebAPI.Models.LoginRequest accInfo)
+        {                
+            if (_account.LoginResult(accInfo)) // Kiểm tra user
+            {
+                accInfo.Id = _account.GetAccID(accInfo.UserName);
+                //var token = GenerateJwtToken();
+                return Ok(accInfo);//
+            }
+            return BadRequest(ModelState);//Unauthorized();
+        }
+        private string GenerateJwtToken()
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                expires: DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"])),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

@@ -4,13 +4,14 @@ namespace WebAPI.Interface
 {
     public interface IAccountService
     {
-        public ICollection<Account> GetAccounts();
+        ICollection<Account> GetAccounts();
         Account GetAccount(int id);
-        Account GetAccount(string name);
+        ICollection<Account> GetAccounts(string name);
         bool AccountsExists(int id);
         bool CreateAccount(Account account);
-        bool UpdatePassword(int id, string oldPassword, string newPassword);
-        bool DisableAccount(int id);
+        bool UpdateAccount(Account account);
+        bool LoginResult(LoginRequest request);
         bool Save();
+        int GetAccID(string userName);
     }
 }
